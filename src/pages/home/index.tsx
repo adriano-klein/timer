@@ -1,0 +1,126 @@
+import { Play } from 'phosphor-react'
+import {
+  CountDownContainer,
+  FormContainer,
+  HomeContainer,
+  MinutesAmountInput,
+  Separator,
+  StartCountdownButton,
+  TaskInput,
+} from '../../../src/pages/home/styles'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+import { string } from 'zod'
+
+const newCycleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'Tempo mínimo é de 5 minutos')
+    .max(60, 'Tempo máximo é de 60 minutos'),
+})
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
+interface Cycle {
+  id: string
+  task: string
+  minutes: number
+}
+
+export function Home() {
+  const [cycles, setCycles] = useState<Cycle[]>([])
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
+
+  const newCycleForm = useForm({
+    resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
+  })
+
+  const { handleSubmit, watch, reset, register } = newCycleForm
+
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    const id = String(new Date().getTime())
+    const newCycle: Cycle = {
+      id,
+      task: data.task,
+      minutes: data.minutesAmount,
+    }
+
+    setCycles((state) => [...state, newCycle])
+    setActiveCycleId(id)
+    reset()
+  }
+
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const totalSeconds = activeCycle ? activeCycle.minutes * 60 : 0
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
+
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0')
+  const seconds = String(secondsAmount).padStart(2, '0')
+
+  // Checa se o campo task está vazio e desabilita o botão enviar
+  const task = watch('task')
+  const isSubmitDisabled = !task
+
+  return (
+    <HomeContainer>
+      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
+        <FormContainer>
+          <label htmlFor="task">Vou trabalhar em</label>
+          <TaskInput
+            type="text"
+            id="task"
+            placeholder="Dê um nome para o seu projeto"
+            list="task-suggestions"
+            {...register('task')}
+          />
+
+          <datalist id="task-suggestions">
+            <option value="Task 1" />
+            <option value="Task 2" />
+            <option value="Task 3" />
+          </datalist>
+
+          <label htmlFor="minutesAmount">durante</label>
+          <MinutesAmountInput
+            type="number"
+            id="minutesAmount"
+            placeholder="00"
+            step={5}
+            min={5}
+            max={60}
+            {...register('minutesAmount', {
+              valueAsNumber: true,
+            })}
+          />
+        </FormContainer>
+
+        <span>minutos</span>
+
+        <CountDownContainer>
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
+          <Separator>:</Separator>
+          <span>{seconds[0]}</span>
+          <span>{seconds[1]}</span>
+        </CountDownContainer>
+
+        <StartCountdownButton type="submit" disabled={isSubmitDisabled}>
+          <Play size={24} />
+          Começar
+        </StartCountdownButton>
+      </form>
+    </HomeContainer>
+  )
+}
