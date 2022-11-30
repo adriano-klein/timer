@@ -11,12 +11,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { CyclesContext } from '../../contexts/cyclesContext'
+import finished from '../../assets/finished.wav'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod
     .number()
-    .min(5, 'Tempo mínimo é de 5 minutos')
+    .min(1, 'Tempo mínimo é de 5 minutos')
     .max(60, 'Tempo máximo é de 60 minutos'),
 })
 
@@ -51,7 +52,6 @@ export function Home() {
           <NewCycleForm />
         </FormProvider>
         <Countdown />
-
         {activeCycle ? (
           <StopCountdownButton type="button" onClick={interruptCurrentCycle}>
             <HandPalm size={24} />

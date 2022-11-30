@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { CyclesContext } from '../../contexts/cyclesContext'
+import { CyclesContext } from '../../contexts/CyclesContext'
 import {
   HistoryContainer,
   HistoryList,

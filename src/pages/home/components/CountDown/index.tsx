@@ -1,7 +1,8 @@
 import { differenceInSeconds } from 'date-fns'
 import { useContext, useEffect } from 'react'
-import { CyclesContext } from '../../../../contexts/cyclesContext'
+import { CyclesContext } from '../../../../contexts/CyclesContext'
 import { CountDownContainer, Separator } from './styles'
+import finished from '../../../../assets/finished.wav'
 
 export function Countdown() {
   const {
@@ -28,6 +29,7 @@ export function Countdown() {
           markCurrentCycleAsFinished()
           setSecondsPassed(totalSeconds)
           clearInterval(interval)
+          new Audio(finished).play()
         } else {
           setSecondsPassed(secondsDifference)
         }

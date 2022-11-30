@@ -7,12 +7,12 @@ import {
   useState,
 } from 'react'
 import {
-  ActionTypes,
   addNewCycleAction,
   interruptCurrentCycleAction,
   markCurrentCycleAsFinishedAction,
 } from '../reducers/cycles/actions'
 import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
+import finishAudio from '../../assets/finished.wav'
 
 interface CreateCycleData {
   task: string
