@@ -10,8 +10,7 @@ import { Countdown } from '../home/components/CountDown'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
-import { CyclesContext } from '../../contexts/cyclesContext'
-import finished from '../../assets/finished.wav'
+import { CyclesContext } from '../../contexts/CyclesContext'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),

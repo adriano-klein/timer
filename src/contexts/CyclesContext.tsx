@@ -12,7 +12,6 @@ import {
   markCurrentCycleAsFinishedAction,
 } from '../reducers/cycles/actions'
 import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
-import finishAudio from '../../assets/finished.wav'
 
 interface CreateCycleData {
   task: string
